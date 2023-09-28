@@ -41,10 +41,10 @@ pipeline {
 
                     if (matcher) {
                         def issueKey = matcher[0][0]
-                        echo "Found Jira Issue Key: ${issueKey}"
+                        echo "Found matching Jira Issue Key name: ${issueKey}"
                         env.ISSUE_KEY = issueKey
                     } else {
-                        error("No Jira Issue Key found in branch name")
+                        error("No Jira Issue Key name found in branch name")
                     }
                 }
             }
