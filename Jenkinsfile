@@ -20,10 +20,11 @@ pipeline {
         stage('Get the name of branch that is merging into main') {
             steps {
                 script {
-                    def mergedBranch = env.BRANCH_NAME
+                    def mergedBranch = sh (script: 'git log --merges --pretty=format:%s', returnStdout: true).trim()
                     
                     if (mergedBranch) {
                         echo "Merged branch: ${mergedBranch}"
+                        env.MERGED_BRANCH_NAME = mergedBranch
                     } else {
                         error("No merged branch was found")
                     }
