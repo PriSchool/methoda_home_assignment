@@ -7,7 +7,7 @@ pipeline {
                 script {
                     def branchName = scm.branches[0].name
                     println branchName
-                    if (branchName == '*/main') {
+                    if (branchName == 'main') {
                         currentBuild.result = 'SUCCESS'
                     } else {
                         currentBuild.result = 'ABORTED'
