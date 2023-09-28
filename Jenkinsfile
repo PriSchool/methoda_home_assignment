@@ -17,21 +17,15 @@ pipeline {
             }
         }
 
-        stage('Get name of branch that is merging into main') {
+        stage('Get the name of branch that is merging into main') {
             steps {
                 script {
-                    def currentBranch = scm.branches[0].name
-                    def mergedBranch = sh(script: "git log --merges --pretty=format:'%h %s' --abbrev-commit", returnStdout: true).trim()
-                    println mergedBranch
-                    def regex = /Merge branch '(.+)' into '${currentBranch}'/
-
-                    def matcher = (mergedBranch =~ regex)
-                    if (matcher) {
-                        def mergedBranchName = matcher[0][1]
-                        echo "Merged branch: ${mergedBranchName}"
-                        env.MERGED_BRANCH_NAME = mergedBranchName
+                    def mergedBranch = env.BRANCH_NAME
+                    
+                    if (mergedBranch) {
+                        echo "Merged branch: ${mergedBranch}"
                     } else {
-                        error("No merged branch found.")
+                        error("No merged branch was found")
                     }
                 }
             }
@@ -40,9 +34,9 @@ pipeline {
         stage('Extract Key name') {
             steps {
                 script {
-                    def branchName = scm.branches[0].name
+                    def mergedBranchName = env.MERGED_BRANCH_NAME
                     def regex = /([A-Z]+-\d+)/
-                    def matcher = (branchName =~ regex)
+                    def matcher = (mergedBranchName =~ regex)
 
                     if (matcher) {
                         def issueKey = matcher[0][0]
