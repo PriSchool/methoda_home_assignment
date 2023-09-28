@@ -20,7 +20,7 @@ pipeline {
         stage('Get the name of branch that is merging into main') {
             steps {
                 script {
-                    def mergedBranch = sh (script: 'git log --merges --pretty=format:%s', returnStdout: true).trim()
+                    def mergedBranch = sh (script: 'git log --merges --pretty=format:%s | head -n 1', returnStdout: true).trim()
                     
                     if (mergedBranch) {
                         echo "Merged branch: ${mergedBranch}"
@@ -55,17 +55,16 @@ pipeline {
                 script {
                     def jiraIssueKey = env.ISSUE_KEY
                     if (jiraIssueKey) {
-                        // Use the jiraIssueKey to check if the issue exists
-                        def issueExists = checkIfIssueExists(jiraIssueKey) // Implement this function
-                        if (issueExists) {
-                            currentBuild.result = 'SUCCESS'
+                        def jiraApiUrl = "https://jira:8080/rest/api/2/issue/${jiraIssueKey}"
+
+                        def curlCommand = "curl -s -o /dev/null -w '%{http_code}' ${jiraApiUrl}"
+                        def responseCode = curlCommand.execute().text.toInteger()
+
+                        if (responseCode == 200) {
+                            println "Jira issue ${jiraIssueKey} exists."
                         } else {
-                            currentBuild.result = 'FAILURE'
-                            error("Jira issue ${jiraIssueKey} does not exist.")
+                            throw new RuntimeException("Jira issue ${jiraIssueKey} does not exist.")
                         }
-                    } else {
-                        currentBuild.result = 'FAILURE'
-                        error("Issue key not found.")
                     }
                 }
             }
@@ -74,8 +73,8 @@ pipeline {
         stage('Mark Jira Key as Done') {
             steps {
                 script {
-                    def jiraIssueKey = env.ISSUE_KEY // Replace with the extracted issue key
-                    def jiraTransitionId = 21 // Replace with the transition ID for "Done" status
+                    def jiraIssueKey = env.ISSUE_KEY
+                    def jiraTransitionId = 21
 
                     def jiraApiUrl = "https://jira:8080/rest/api/2/issue/${jiraIssueKey}/transitions"
                     def jiraCredentialsId = 'tomerprielg'
