@@ -6,6 +6,7 @@ pipeline {
             steps {
                 script {
                     def branchName = scm.branches[0].name
+                    println branchName
                     if (branchName == 'origin/main') {
                         currentBuild.result = 'SUCCESS'
                     } else {
