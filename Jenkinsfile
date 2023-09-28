@@ -17,14 +17,13 @@ pipeline {
             }
         }
 
-        stage('Get name of branch that is merging into main') {
+        stage('Get the name of branch that is merging into main') {
             steps {
                 script {
-                    def mergedBranch = sh(script: "git branch --merged main | grep -v 'main' | xargs", returnStdout: true).trim()
+                    def mergedBranch = env.BRANCH_NAME
                     
                     if (mergedBranch) {
                         echo "Merged branch: ${mergedBranch}"
-                        env.MERGED_BRANCH_NAME = mergedBranch
                     } else {
                         error("No merged branch was found")
                     }
