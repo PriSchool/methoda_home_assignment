@@ -5,11 +5,11 @@ pipeline {
         stage('Check if branch is main') {
             steps {
                 script {
-                    def branchName = build.changeSets[0].branch
+                    def branchName = currentBuild.changeSets[0].branch
                     if (branchName == 'origin/main') {
-                        build.result = 'SUCCESS'
+                        currentBuild.result = 'SUCCESS'
                     } else {
-                        build.result = 'ABORTED'
+                        currentBuild.result = 'ABORTED'
                         error("Not main branch")
                     }
                 }
@@ -19,7 +19,7 @@ pipeline {
         stage('Extract Key name') {
             steps {
                 script {
-                    def branchName = build.changeSets[0].branch
+                    def branchName = currentBuild.changeSets[0].branch
                     def regex = /([A-Z]+-\d+)/
                     def matcher = (branchName =~ regex)
 
@@ -42,13 +42,13 @@ pipeline {
                         // Use the jiraIssueKey to check if the issue exists
                         def issueExists = checkIfIssueExists(jiraIssueKey) // Implement this function
                         if (issueExists) {
-                            build.result = 'SUCCESS'
+                            currentBuild.result = 'SUCCESS'
                         } else {
-                            build.result = 'FAILURE'
+                            currentBuild.result = 'FAILURE'
                             error("Jira issue ${jiraIssueKey} does not exist.")
                         }
                     } else {
-                        build.result = 'FAILURE'
+                        currentBuild.result = 'FAILURE'
                         error("Issue key not found.")
                     }
                 }
