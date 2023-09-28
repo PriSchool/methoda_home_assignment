@@ -5,7 +5,7 @@ pipeline {
         stage('Check if branch is main') {
             steps {
                 script {
-                    def branchName = currentBuild.changeSets[0].branch
+                    def branchName = scm.branches[0].name
                     if (branchName == 'origin/main') {
                         currentBuild.result = 'SUCCESS'
                     } else {
@@ -19,7 +19,7 @@ pipeline {
         stage('Extract Key name') {
             steps {
                 script {
-                    def branchName = currentBuild.changeSets[0].branch
+                    def branchName = scm.branches[0].name
                     def regex = /([A-Z]+-\d+)/
                     def matcher = (branchName =~ regex)
 
