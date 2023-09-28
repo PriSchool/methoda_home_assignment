@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Check if branch is main') {
+        stage('Check if branch that is merged into is main') {
             steps {
                 script {
                     def branchName = scm.branches[0].name
@@ -12,6 +12,26 @@ pipeline {
                     } else {
                         currentBuild.result = 'ABORTED'
                         error("Not main branch")
+                    }
+                }
+            }
+        }
+
+        stage('Get name of branch that is merging into main') {
+            steps {
+                script {
+                    def currentBranch = scm.branches[0].name
+                    def mergedBranch = sh(script: "git log --merges --pretty=format:'%h %s' --abbrev-commit", returnStdout: true).trim()
+                    println mergedBranch
+                    def regex = /Merge branch '(.+)' into '${currentBranch}'/
+
+                    def matcher = (mergedBranch =~ regex)
+                    if (matcher) {
+                        def mergedBranchName = matcher[0][1]
+                        echo "Merged branch: ${mergedBranchName}"
+                        env.MERGED_BRANCH_NAME = mergedBranchName
+                    } else {
+                        error("No merged branch found.")
                     }
                 }
             }
