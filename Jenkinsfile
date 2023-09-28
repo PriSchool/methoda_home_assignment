@@ -60,7 +60,7 @@ pipeline {
                     if (jiraIssueKey) {
                         def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}"
 
-                        def curlCommand = "curl -s -o /dev/null -u ${jiraCredentialsId}:${jiraCredentialsPassword} -w '%{http_code}' ${jiraApiUrl}"
+                        def curlCommand = "curl -s -o /dev/null -u ${jiraCredentialsId}:${jiraCredentialsPassword} -w %{http_code} ${jiraApiUrl}"
                         println curlCommand
                         def responseCode = curlCommand.execute().text.toInteger()
 
