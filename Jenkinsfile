@@ -78,7 +78,7 @@ pipeline {
             steps {
                 script {
                     def jiraIssueKey = env.ISSUE_KEY
-                    def jiraTransitionId = 21
+                    def jiraTransitionId = 31
 
                     def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}/transitions"
                     def jiraCredentialsId = 'tomerprielg'
