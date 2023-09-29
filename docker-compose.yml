@@ -1,0 +1,41 @@
+version: '3'
+services:
+  jira:
+    image: atlassian/jira-software:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./jira-data:/var/atlassian/application-data/jira
+    environment:
+      - JIRA_SERVER_ID=${JIRA_SERVER_ID}
+
+  confluence:
+    image: atlassian/confluence-server:latest
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./confluence-data:/var/atlassian/application-data/confluence
+    environment:
+      - CONFLUENCE_SERVER_ID=${CONFLUENCE_SERVER_ID}
+    depends_on:
+      - postgres-confluence
+
+  postgres-confluence:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER_CONFLUENCE}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_CONFLUENCE}
+      POSTGRES_DB: confluence
+    volumes:
+      - ./postgres-data-confluence:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./jenkins-data:/var/jenkins_home
