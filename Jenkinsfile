@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     def jiraIssueKey = env.ISSUE_KEY
-                    def jiraCredentialsId = 'tomerprielg'
+                    def jiraCredentialsId = 'admin'
                     def jiraCredentialsPassword = '@JT!pJsh$Gd4*3s'
 
                     if (jiraIssueKey) {
@@ -81,7 +81,7 @@ pipeline {
                     def jiraTransitionId = 31
 
                     def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}/transitions"
-                    def jiraCredentialsId = 'tomerprielg'
+                    def jiraCredentialsId = 'admin'
                     def jiraCredentialsPassword = '@JT!pJsh$Gd4*3s'
 
                     def response = sh(
