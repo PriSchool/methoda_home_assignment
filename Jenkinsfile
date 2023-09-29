@@ -54,13 +54,12 @@ pipeline {
             steps {
                 script {
                     def jiraIssueKey = env.ISSUE_KEY
-                    def jiraCredentialsId = 'admin'
-                    def jiraCredentialsPassword = '@JT!pJsh$Gd4*3s'
+                    def jiraApiToken = env.JIRA_API_TOKEN_ADMIN
 
                     if (jiraIssueKey) {
                         def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}"
 
-                        def curlCommand = "curl -s -o /dev/null -u ${jiraCredentialsId}:${jiraCredentialsPassword} -w %{http_code} ${jiraApiUrl}"
+                        def curlCommand = "curl -s -o /dev/null -H 'Authorization: Bearer ${jiraApiToken}' -w %{http_code} ${jiraApiUrl}"
                         println curlCommand
                         def responseCode = curlCommand.execute().text.toInteger()
 
@@ -81,12 +80,11 @@ pipeline {
                     def jiraTransitionId = 31
 
                     def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}/transitions"
-                    def jiraCredentialsId = 'admin'
-                    def jiraCredentialsPassword = '@JT!pJsh$Gd4*3s'
+                    def jiraApiToken = env.JIRA_API_TOKEN_ADMIN
 
                     def response = sh(
                         script: """
-                            curl -X POST -D- -u ${jiraCredentialsId}:'${jiraCredentialsPassword}' -H 'Content-Type: application/json' --data '{
+                            curl -X POST -D- -H 'Authorization: Bearer ${jiraApiToken}' -H 'Content-Type: application/json' --data '{
                                 "transition": {
                                     "id": ${jiraTransitionId}
                                 }
