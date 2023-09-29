@@ -67,9 +67,8 @@ pipeline {
                                 curl -s -o /dev/null -H 'Authorization: Bearer ${JIRA_API_TOKEN}' -w %{http_code} ${jiraApiUrl}
                             """,
                             returnStatus: true
-                        ).text.toInteger();
+                        ).toInteger();
                         
-
                         if (response == 200) {
                             println "Jira issue ${jiraIssueKey} exists."
                         } else {
