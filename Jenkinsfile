@@ -6,6 +6,7 @@ pipeline {
             steps {
                 script {
                     def branchName = scm.branches[0].name
+                    println branchName
                     if (branchName == 'main') {
                         currentBuild.result = 'SUCCESS'
                     } else {
@@ -53,18 +54,20 @@ pipeline {
             steps {
                 script {
                     def jiraIssueKey = env.ISSUE_KEY
-                    def jiraAuthToken = env.JIRA_AUTH_TOKEN
+                    def jiraCredentialsId = 'tomerprielg'
+                    def jiraCredentialsPassword = '@JT!pJsh$Gd4*3s'
 
                     if (jiraIssueKey) {
                         def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}"
 
-                        def curlCommand = "curl -s -o /dev/null -H 'Authorization: Basic ${jiraAuthToken}' -w \"%{http_code}\" ${jiraApiUrl}"
+                        def curlCommand = "curl -s -o /dev/null -u ${jiraCredentialsId}:${jiraCredentialsPassword} -w %{http_code} ${jiraApiUrl}"
+                        println curlCommand
                         def responseCode = curlCommand.execute().text.toInteger()
 
                         if (responseCode == 200) {
                             println "Jira issue ${jiraIssueKey} exists."
                         } else {
-                            error("Jira issue ${jiraIssueKey} does not exist")
+                            throw new RuntimeException("Jira issue ${jiraIssueKey} does not exist.")
                         }
                     }
                 }
@@ -78,11 +81,12 @@ pipeline {
                     def jiraTransitionId = 31
 
                     def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}/transitions"
-                    def jiraAuthToken = env.JIRA_AUTH_TOKEN
+                    def jiraCredentialsId = 'tomerprielg'
+                    def jiraCredentialsPassword = '@JT!pJsh$Gd4*3s'
 
                     def response = sh(
                         script: """
-                            curl -X POST -D- -H "Authorization: Basic ${jiraAuthToken}" -H 'Content-Type: application/json' --data '{
+                            curl -X POST -D- -u ${jiraCredentialsId}:'${jiraCredentialsPassword}' -H 'Content-Type: application/json' --data '{
                                 "transition": {
                                     "id": ${jiraTransitionId}
                                 }
