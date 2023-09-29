@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        JIRA_API_TOKEN='MjQ0NzA4NzgwMTkzOt0mcZP41hVArf36o7KLwrPyLgAU'
+    }
+
     stages {
         stage('Check if branch that is merged into is main') {
             steps {
@@ -54,13 +58,11 @@ pipeline {
             steps {
                 script {
                     def jiraIssueKey = env.ISSUE_KEY
-                    def jiraApiToken = env.JIRA_API_TOKEN_ADMIN
 
                     if (jiraIssueKey) {
-                        println jiraApiToken
                         def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}"
 
-                        def curlCommand = "curl -s -o /dev/null -H \'Authorization: Bearer ${jiraApiToken}\' -w %{http_code} ${jiraApiUrl}"
+                        def curlCommand = "curl -s -o /dev/null -H \'Authorization: Bearer ${JIRA_API_TOKEN}\' -w %{http_code} ${jiraApiUrl}"
                         println curlCommand
                         def responseCode = curlCommand.execute().text.toInteger()
 
@@ -81,11 +83,10 @@ pipeline {
                     def jiraTransitionId = 31
 
                     def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}/transitions"
-                    def jiraApiToken = env.JIRA_API_TOKEN_ADMIN
 
                     def response = sh(
                         script: """
-                            curl -X POST -D- -H 'Authorization: Bearer ${jiraApiToken}' -H 'Content-Type: application/json' --data '{
+                            curl -X POST -D- -H 'Authorization: Bearer ${JIRA_API_TOKEN}' -H 'Content-Type: application/json' --data '{
                                 "transition": {
                                     "id": ${jiraTransitionId}
                                 }
