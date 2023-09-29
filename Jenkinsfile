@@ -57,9 +57,10 @@ pipeline {
                     def jiraApiToken = env.JIRA_API_TOKEN_ADMIN
 
                     if (jiraIssueKey) {
+                        println jiraApiToken
                         def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}"
 
-                        def curlCommand = "curl -s -o /dev/null -H 'Authorization: Bearer ${jiraApiToken}' -w %{http_code} ${jiraApiUrl}"
+                        def curlCommand = "curl -s -o /dev/null -H \'Authorization: Bearer ${jiraApiToken}\' -w %{http_code} ${jiraApiUrl}"
                         println curlCommand
                         def responseCode = curlCommand.execute().text.toInteger()
 
