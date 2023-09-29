@@ -1,5 +1,5 @@
 This repo is for simulating a feature/issue branch that is being merged into main branch.
 All 3 services (Confluence, Jenkins, Jira) are accessible using ngrok, and are defined in a separate repo (https://github.com/PriSchool/methoda_home_assignment_done_issue).
 
-When you create a branch following a naming convention (Capital Letters -> Hypen -> Integer, "HOM-345"), if you merge it to main branch and then push it to github,
+When you create a branch following a naming convention (Capital Letters -> Hypen -> Integer, "HOM-10"), if you merge it to main branch and then push it to github,
 then it gets picked up by the webhook connected to Jenkins, which then starts the pipeline.
