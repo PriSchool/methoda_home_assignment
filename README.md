@@ -8,7 +8,7 @@ This repository is for simulating a feature/issue branch that is being merged in
 
 To trigger the pipeline and mark a Jira issue as "Done," follow these steps:
 
-1. Create a branch following the naming convention: `Capital Letters -> Hyphen -> Integer`, for example, "HOM-456."
+1. Create a branch following the naming convention: `Capital Letters -> Hyphen -> Integer`, for example, "HOM-123."
 
 2. Merge the branch into the main branch using the following command:
 ```
