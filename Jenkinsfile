@@ -62,11 +62,15 @@ pipeline {
                     if (jiraIssueKey) {
                         def jiraApiUrl = "http://jira:8080/rest/api/2/issue/${jiraIssueKey}"
 
-                        def curlCommand = "curl -s -o /dev/null -H 'Authorization: Bearer ${JIRA_API_TOKEN}' -w %{http_code} ${jiraApiUrl}"
-                        println curlCommand
-                        def responseCode = curlCommand.execute().text.toInteger()
+                        def response = sh(
+                            script: """
+                                curl -s -o /dev/null -H 'Authorization: Bearer ${JIRA_API_TOKEN}' -w %{http_code} ${jiraApiUrl}
+                            """,
+                            returnStatus: true
+                        ).text.toInteger();
+                        
 
-                        if (responseCode == 200) {
+                        if (response == 200) {
                             println "Jira issue ${jiraIssueKey} exists."
                         } else {
                             throw new RuntimeException("Jira issue ${jiraIssueKey} does not exist.")
